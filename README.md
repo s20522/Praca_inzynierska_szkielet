@@ -1,4 +1,4 @@
-# Propozycja planu eksperymentów do pracy inżynierskiej
+# Plan eksperymentów do pracy inżynierskiej
 
 **Tytuł pracy:** Zastosowanie sieci neuronowych i metod uczenia maszynowego do predykcji przeżywalności pacjentów z niewydolnością serca – reprodukcja i rozszerzenie badań
 

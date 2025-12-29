@@ -2,12 +2,6 @@
 
 **Tytuł pracy:** Zastosowanie sieci neuronowych i metod uczenia maszynowego do predykcji przeżywalności pacjentów z niewydolnością serca – reprodukcja i rozszerzenie badań
 
-**Autor:** [Imię Nazwisko]
-
-**Opiekun pracy:** [Stopień, Imię Nazwisko]
-
-**Data:** [Data]
-
 ---
 
 ## 1. Wprowadzenie

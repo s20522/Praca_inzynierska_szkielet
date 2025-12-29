@@ -8,7 +8,7 @@
 
 Niewydolność serca stanowi jedno z najpoważniejszych wyzwań współczesnej medycyny, będąc przyczyną około 17,9 miliona zgonów rocznie na świecie. Choroba ta charakteryzuje się osłabieniem funkcji pompowania krwi przez serce, co prowadzi do niedostatecznego zaopatrzenia tkanek w tlen i substancje odżywcze. Wczesna i dokładna predykcja ryzyka zgonu u pacjentów z niewydolnością serca ma kluczowe znaczenie dla optymalizacji strategii terapeutycznych, alokacji zasobów medycznych oraz poprawy jakości życia pacjentów.
 
-Niniejsza praca stanowi próbę reprodukcji oraz rozszerzenia badań przedstawionych w publikacji Mishry (2022) [1], która przeprowadziła kompleksową analizę przeżycia i predykcję zgonu dla 299 pacjentów z zaawansowaną niewydolnością serca (klasa III/IV według klasyfikacji NYHA). Oryginalnie badanie wykorzystało metody analizy przeżycia (Kaplan-Meier, model Coksa) oraz klasyczne algorytmy uczenia maszynowego (SVM, Random Forest, XGBoost, LightGBM). Autorzy zidentyfikowali frakcję wyrzutową, poziom kreatyniny w surowicy oraz wiek jako najistotniejsze czynniki prognostyczne.
+Niniejsza praca stanowi próbę reprodukcji oraz rozszerzenia badań przedstawionych w publikacji Mishry (2022), która przeprowadziła kompleksową analizę przeżycia i predykcję zgonu dla 299 pacjentów z zaawansowaną niewydolnością serca (klasa III/IV według klasyfikacji NYHA). Oryginalnie badanie wykorzystało metody analizy przeżycia (Kaplan-Meier, model Coksa) oraz klasyczne algorytmy uczenia maszynowego (SVM, Random Forest, XGBoost, LightGBM). Autorzy zidentyfikowali frakcję wyrzutową, poziom kreatyniny w surowicy oraz wiek jako najistotniejsze czynniki prognostyczne.
 
 **Głównym celem pracy jest weryfikacja wyników oryginalnej analizy oraz zbadanie, czy alternatywne podejścia, w szczególności głębokie sieci neuronowe, mogą zaoferować lepszą skuteczność predykcyjną w zadaniu klasyfikacji zgonu pacjentów.**
 
@@ -22,7 +22,7 @@ Celem głównym pracy jest kompleksowa ocena skuteczności różnych metod uczen
 
 Realizacja celu głównego obejmuje następujące zadania:
 
-1. Reprodukcję kluczowych eksperymentów z oryginalnej publikacji [1], w tym eksploracyjnej analizy danych, analizy przeżycia metodami Kaplana-Meiera i Coksa oraz modelowania predykcyjnego z użyciem klasycznych algorytmów ML.
+1. Reprodukcję kluczowych eksperymentów z oryginalnej publikacji, w tym eksploracyjnej analizy danych, analizy przeżycia metodami Kaplana-Meiera i Coksa oraz modelowania predykcyjnego z użyciem klasycznych algorytmów ML.
 2. Przeprowadzenie rozszerzonej inżynierii cech w celu potencjalnej poprawy jakości predykcji.
 3. Zaprojektowanie, implementację i optymalizację modeli opartych na sieciach neuronowych (MLP oraz DeepSurv).
 4. Systematyczne porównanie wyników uzyskanych przez nowe modele z wynikami modeli bazowych.
@@ -60,7 +60,7 @@ W zbiorze danych 96 pacjentów (32,11%) zmarło w okresie obserwacji, podczas gd
 
 ### 4.1. Etap 1: Reprodukcja badań bazowych
 
-Pierwszym etapem pracy będzie odtworzenie środowiska i eksperymentów z repozytorium GitHub [2] w celu weryfikacji wyników z publikacji [1]. Pozwoli to na zrozumienie metodyki bazowej oraz identyfikację potencjalnych obszarów do poprawy.
+Pierwszym etapem pracy będzie odtworzenie środowiska i eksperymentów z repozytorium GitHub w celu weryfikacji wyników z publikacji.
 
 #### 4.1.1. Reprodukcja eksploracyjnej analizy danych (EDA)
 
@@ -75,18 +75,18 @@ Zostanie odtworzona analiza z notebooka `Exploratory_Data_Analysis.ipynb`, obejm
 Zostanie odtworzona analiza przeżycia z notebooków `Kaplan_Meier_Estimates_Survival_Analysis.ipynb` oraz `Cox_Proportional_Hazards_Regression.ipynb`:
 
 *   **Estymatory Kaplana-Meiera:** Odtworzenie krzywych przeżycia dla różnych grup pacjentów (np. z anemią vs bez anemii, z wysokim vs niskim poziomem kreatyniny). Pozwoli to na wizualną ocenę wpływu poszczególnych czynników na prawdopodobieństwo przeżycia w czasie.
-*   **Model regresji proporcjonalnych hazardów Coksa:** Odtworzenie modelu Coksa w celu identyfikacji czynników ryzyka i oszacowania współczynników hazardu. Kluczowym elementem będzie potwierdzenie, że cechy `age`, `serum_creatinine`, `ejection_fraction` oraz `time` są istotne statystycznie (p < 0.0005). Szczególną uwagę należy zwrócić na cechę `time`, która, zgodnie z publikacją [1], jest silnie skorelowana ze zmienną celu i stanowi źródło wycieku danych (data leakage).
+*   **Model regresji proporcjonalnych hazardów Coksa:** Odtworzenie modelu Coksa w celu identyfikacji czynników ryzyka i oszacowania współczynników hazardu. Kluczowym elementem będzie potwierdzenie, że cechy `age`, `serum_creatinine`, `ejection_fraction` oraz `time` są istotne statystycznie (p < 0.0005). Szczególną uwagę należy zwrócić na cechę `time`, która, zgodnie z publikacją, jest silnie skorelowana ze zmienną celu i stanowi źródło wycieku danych (data leakage).
 
-**Uzasadnienie wykluczenia cechy `time` z modeli predykcyjnych:** W kontekście rzeczywistego zastosowania klinicznego, czas obserwacji (`time`) nie jest znany w momencie dokonywania prognozy dla nowego pacjenta. Cecha ta reprezentuje czas do zdarzenia (zgonu) lub cenzurowania, co czyni ją bezpośrednio zależną od zmiennej celu. Włączenie jej do modelu predykcyjnego prowadziłoby do sztucznego zawyżenia wyników i uniemożliwiłoby wykorzystanie modelu w praktyce. Dlatego, zgodnie z podejściem autorów [1], cecha `time` zostanie wykluczona z modeli ML służących do predykcji `DEATH_EVENT`.
+**Uzasadnienie wykluczenia cechy `time` z modeli predykcyjnych:** W kontekście rzeczywistego zastosowania klinicznego, czas obserwacji (`time`) nie jest znany w momencie dokonywania prognozy dla nowego pacjenta. Cecha ta reprezentuje czas do zdarzenia (zgonu) lub cenzurowania, co czyni ją bezpośrednio zależną od zmiennej celu. Włączenie jej do modelu predykcyjnego prowadziłoby do sztucznego zawyżenia wyników i uniemożliwiłoby wykorzystanie modelu w praktyce. Dlatego, zgodnie z podejściem autorów, cecha `time` zostanie wykluczona z modeli ML służących do predykcji `DEATH_EVENT`.
 
 #### 4.1.3. Reprodukcja modeli uczenia maszynowego
 
 Zostanie odtworzony potok uczenia maszynowego z notebooka `Heart_Failure_Prediction.ipynb`:
 
-*   **Wybór cech:** Zgodnie z publikacją [1], do modelowania zostaną wykorzystane cechy: `age`, `ejection_fraction`, `serum_creatinine` (cechy o najwyższej istotności statystycznej w modelu Coksa, z wyłączeniem `time`).
+*   **Wybór cech:** Zgodnie z publikacją, do modelowania zostaną wykorzystane cechy: `age`, `ejection_fraction`, `serum_creatinine` (cechy o najwyższej istotności statystycznej w modelu Coksa, z wyłączeniem `time`).
 *   **Podział danych:** Zastosowanie randomized cross-validation w celu optymalizacji hiperparametrów i oceny stabilności modeli.
 *   **Modele bazowe:** Implementacja i trening modeli: SVM, Decision Tree, Random Forest, XGBoost, LightGBM.
-*   **Weryfikacja wyników:** Próba uzyskania zbliżonych wyników do tych przedstawionych w Tabeli 2 publikacji [1] (SVM: F1=88.37, Accuracy=83.33%; LightGBM: F1=85.71, Accuracy=80.00%).
+*   **Weryfikacja wyników:** Próba uzyskania zbliżonych wyników do tych przedstawionych w Tabeli 2 publikacji (SVM: F1=88.37, Accuracy=83.33%; LightGBM: F1=85.71, Accuracy=80.00%).
 
 ### 4.2. Etap 2: Rozszerzenie i nowe eksperymenty
 
@@ -137,7 +137,7 @@ MLP jest podstawową architekturą sieci neuronowej typu feed-forward, składaj�
 
 **b) DeepSurv – sieć neuronowa do analizy przeżycia**
 
-DeepSurv [3] to model głębokiego uczenia zaprojektowany specjalnie do analizy przeżycia. Jest to wariant sieci neuronowej, który bezpośrednio modeluje funkcję hazardu (ryzyko zdarzenia w czasie), stanowiąc nieliniowe rozszerzenie modelu proporcjonalnych hazardów Coksa.
+DeepSurv to model głębokiego uczenia zaprojektowany specjalnie do analizy przeżycia. Jest to wariant sieci neuronowej, który bezpośrednio modeluje funkcję hazardu (ryzyko zdarzenia w czasie), stanowiąc nieliniowe rozszerzenie modelu proporcjonalnych hazardów Coksa.
 
 **Uzasadnienie wyboru DeepSurv:** Podczas gdy MLP przewiduje binarny wynik (zgon/przeżycie), DeepSurv uwzględnia wymiar czasowy i modeluje ryzyko w funkcji czasu. Pozwala to na bardziej precyzyjną predykcję, uwzględniającą moment wystąpienia zdarzenia oraz dane cenzurowane (pacjenci, którzy opuścili badanie lub nie doświadczyli zdarzenia w okresie obserwacji). DeepSurv może lepiej oddać złożoność zależności czasowych w niewydolności serca.
 

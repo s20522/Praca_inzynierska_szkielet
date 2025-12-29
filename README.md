@@ -10,7 +10,7 @@ Niewydolność serca stanowi jedno z najpoważniejszych wyzwań współczesnej m
 
 Niniejsza praca stanowi próbę reprodukcji oraz rozszerzenia badań przedstawionych w publikacji Mishry (2022) [1], która przeprowadziła kompleksową analizę przeżycia i predykcję zgonu dla 299 pacjentów z zaawansowaną niewydolnością serca (klasa III/IV według klasyfikacji NYHA). Oryginalnie badanie wykorzystało metody analizy przeżycia (Kaplan-Meier, model Coksa) oraz klasyczne algorytmy uczenia maszynowego (SVM, Random Forest, XGBoost, LightGBM). Autorzy zidentyfikowali frakcję wyrzutową, poziom kreatyniny w surowicy oraz wiek jako najistotniejsze czynniki prognostyczne.
 
-**Głównym celem niniejszej pracy jest weryfikacja wyników oryginalnej analizy oraz zbadanie, czy alternatywne podejścia, w szczególności głębokie sieci neuronowe, mogą zaoferować lepszą skuteczność predykcyjną w zadaniu klasyfikacji zgonu pacjentów.**
+**Głównym celem pracy jest weryfikacja wyników oryginalnej analizy oraz zbadanie, czy alternatywne podejścia, w szczególności głębokie sieci neuronowe, mogą zaoferować lepszą skuteczność predykcyjną w zadaniu klasyfikacji zgonu pacjentów.**
 
 ## 2. Cel i zakres pracy
 

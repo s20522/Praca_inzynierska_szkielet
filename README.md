@@ -10,27 +10,27 @@ Niewydolność serca stanowi jedno z najpoważniejszych wyzwań współczesnej m
 
 Niniejsza praca stanowi próbę reprodukcji oraz rozszerzenia badań przedstawionych w publikacji Mishry (2022), która przeprowadziła kompleksową analizę przeżycia i predykcję zgonu dla 299 pacjentów z zaawansowaną niewydolnością serca (klasa III/IV według klasyfikacji NYHA). Oryginalnie badanie wykorzystało metody analizy przeżycia (Kaplan-Meier, model Coksa) oraz klasyczne algorytmy uczenia maszynowego (SVM, Random Forest, XGBoost, LightGBM). Autorzy zidentyfikowali frakcję wyrzutową, poziom kreatyniny w surowicy oraz wiek jako najistotniejsze czynniki prognostyczne.
 
-**Głównym celem pracy jest weryfikacja wyników oryginalnej analizy oraz zbadanie, czy alternatywne podejścia, w szczególności głębokie sieci neuronowe, mogą zaoferować lepszą skuteczność predykcyjną w zadaniu klasyfikacji zgonu pacjentów.**
+**Głównym celem pracy jest sprawdzenie czy sieć neuronowa jest w stanie przewyższyć stworzone w eksperymencie modele uczenia maszynowego**
 
 ## 2. Cel i zakres pracy
 
 ### 2.1. Cel główny
 
-Celem głównym pracy jest kompleksowa ocena skuteczności różnych metod uczenia maszynowego, ze szczególnym uwzględnieniem sieci neuronowych, w predykcji zgonu pacjentów z niewydolnością serca, oraz porównanie uzyskanych wyników z metodami bazowymi opisanymi w literaturze.
+Celem głównym pracy jest kompleksowa ocena skuteczności różnych metod uczenia maszynowego, ze szczególnym uwzględnieniem sieci neuronowych, w predykcji zgonu pacjentów z niewydolnością serca, oraz porównanie uzyskanych wyników z metodami opisanymi w literaturze.
 
 ### 2.2. Cele szczegółowe
 
 Realizacja celu głównego obejmuje następujące zadania:
 
-1. Reprodukcję kluczowych eksperymentów z oryginalnej publikacji, w tym eksploracyjnej analizy danych, analizy przeżycia metodami Kaplana-Meiera i Coksa oraz modelowania predykcyjnego z użyciem klasycznych algorytmów ML.
+1. Reprodukcję kluczowych eksperymentów z oryginalnej publikacji, w tym eksploracyjnej analizy danych, analizy przeżycia metodami klasycznych algorytmów ML.
 2. Przeprowadzenie rozszerzonej inżynierii cech w celu potencjalnej poprawy jakości predykcji.
 3. Zaprojektowanie, implementację i optymalizację modeli opartych na sieciach neuronowych (MLP oraz DeepSurv).
-4. Systematyczne porównanie wyników uzyskanych przez nowe modele z wynikami modeli bazowych.
+4. Systematyczne porównanie wyników uzyskanych przez nowe modele z wynikami modeli w literaturze.
 5. Sformułowanie wniosków dotyczących wartości dodanej sieci neuronowych w analizowanym problemie klinicznym.
 
 ## 3. Zbiór danych
 
-Analiza zostanie przeprowadzona na publicznie dostępnym zbiorze danych "Heart Failure Clinical Records" [2], który zawiera 299 rekordów pacjentów z zaawansowaną niewydolnością serca. Zbiór składa się z 12 cech klinicznych oraz zmiennej celu (`DEATH_EVENT`), która wskazuje, czy pacjent zmarł w okresie obserwacji.
+Analiza zostanie przeprowadzona na publicznie dostępnym zbiorze danych "Heart Failure Clinical Records", który zawiera 299 rekordów pacjentów z zaawansowaną niewydolnością serca. Zbiór składa się z 12 cech klinicznych oraz zmiennej celu (`DEATH_EVENT`), która wskazuje, czy pacjent zmarł w okresie obserwacji.
 
 ### 3.1. Charakterystyka zbioru danych
 
@@ -70,16 +70,8 @@ Zostanie odtworzona analiza z notebooka `Exploratory_Data_Analysis.ipynb`, obejm
 *   **Analizę dwuwymiarową:** Badanie korelacji pomiędzy cechami numerycznymi za pomocą macierzy korelacji i heatmapy w celu identyfikacji współliniowości. Analiza zależności między poszczególnymi cechami a zmienną celu `DEATH_EVENT` za pomocą wykresów pudełkowych i testów statystycznych (t-test dla cech ciągłych, chi-kwadrat dla cech kategorycznych).
 *   **Weryfikację kluczowych obserwacji:** Potwierdzenie, że pacjenci, którzy zmarli, charakteryzują się wyższym poziomem kreatyniny w surowicy, niższą frakcją wyrzutową oraz niższym poziomem sodu w surowicy w porównaniu do pacjentów, którzy przeżyli.
 
-#### 4.1.2. Reprodukcja analizy przeżycia
 
-Zostanie odtworzona analiza przeżycia z notebooków `Kaplan_Meier_Estimates_Survival_Analysis.ipynb` oraz `Cox_Proportional_Hazards_Regression.ipynb`:
-
-*   **Estymatory Kaplana-Meiera:** Odtworzenie krzywych przeżycia dla różnych grup pacjentów (np. z anemią vs bez anemii, z wysokim vs niskim poziomem kreatyniny). Pozwoli to na wizualną ocenę wpływu poszczególnych czynników na prawdopodobieństwo przeżycia w czasie.
-*   **Model regresji proporcjonalnych hazardów Coksa:** Odtworzenie modelu Coksa w celu identyfikacji czynników ryzyka i oszacowania współczynników hazardu. Kluczowym elementem będzie potwierdzenie, że cechy `age`, `serum_creatinine`, `ejection_fraction` oraz `time` są istotne statystycznie (p < 0.0005). Szczególną uwagę należy zwrócić na cechę `time`, która, zgodnie z publikacją, jest silnie skorelowana ze zmienną celu i stanowi źródło wycieku danych (data leakage).
-
-**Uzasadnienie wykluczenia cechy `time` z modeli predykcyjnych:** W kontekście rzeczywistego zastosowania klinicznego, czas obserwacji (`time`) nie jest znany w momencie dokonywania prognozy dla nowego pacjenta. Cecha ta reprezentuje czas do zdarzenia (zgonu) lub cenzurowania, co czyni ją bezpośrednio zależną od zmiennej celu. Włączenie jej do modelu predykcyjnego prowadziłoby do sztucznego zawyżenia wyników i uniemożliwiłoby wykorzystanie modelu w praktyce. Dlatego, zgodnie z podejściem autorów, cecha `time` zostanie wykluczona z modeli ML służących do predykcji `DEATH_EVENT`.
-
-#### 4.1.3. Reprodukcja modeli uczenia maszynowego
+#### 4.1.2. Reprodukcja modeli uczenia maszynowego
 
 Zostanie odtworzony potok uczenia maszynowego z notebooka `Heart_Failure_Prediction.ipynb`:
 
